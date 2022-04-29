@@ -4,37 +4,60 @@ LOWERCASE_UPPER = 122
 LOWERCASE_LOWER = 97
 
 
-def is_uppercase(character, shift):
-    char = ord(character)
-    if CAPITAL_LOWER <= char <= CAPITAL_UPPER:
-        new_value = char + shift
-        if new_value > CAPITAL_UPPER:
-            difference = new_value - CAPITAL_UPPER
-            new_value = CAPITAL_LOWER + difference - 1
-        return chr(new_value)
-    else:
-        new_value = char + shift
-        if new_value > LOWERCASE_UPPER:
-            difference = new_value - LOWERCASE_UPPER
-            new_value = LOWERCASE_LOWER + difference - 1
-        return chr(new_value)
+def get_shift():
+    shift = 0
+    condition = False
+    while not condition:
+        shift = int(input("Number of characters to shift (1 - 26): "))
+        if 1 <= shift <= 26:
+            condition = True
+        else:
+            print("Enter valid number")
+    return shift
 
 
 message = input("Enter message: ")
+shift = get_shift()
 
-shift = ""
-condition = False
-while not condition:
-    shift = int(input("Number of characters to shift (1 - 26): "))
-    if 1 <= shift <= 26:
-        condition = True
-        message_char_list = list(message)
+encrypted_message = ""
+
+for letter in message:
+    if letter == ' ':
+        encrypted_message += letter
     else:
-        print("Enter valid number")
+        if letter.isupper():
+            char = ord(letter)
+            char_index = ord(letter) - CAPITAL_LOWER
+            new_index = (char_index + shift) % 26
+            new_char = new_index + CAPITAL_LOWER
+            new_letter = chr(new_char)
+            encrypted_message += new_letter
+        else:
+            char = ord(letter)
+            char_index = ord(letter) - LOWERCASE_LOWER
+            new_index = (char_index + shift) % 26
+            new_char = new_index + LOWERCASE_LOWER
+            new_letter = chr(new_char)
+            encrypted_message += new_letter
+print("Encrypted:", encrypted_message)
+decrypted_message = ""
 
-new_char_list = []
-for character in message_char_list:
-    new_char = is_uppercase(character, shift)
-    new_char_list.append(new_char)
-
-print(''.join(new_char_list))
+for letter in encrypted_message:
+    if letter == ' ':
+        decrypted_message += letter
+    else:
+        if letter.isupper():
+            char = ord(letter)
+            char_index = ord(letter) - CAPITAL_LOWER
+            new_index = (char_index - shift) % 26
+            new_char = new_index + CAPITAL_LOWER
+            new_letter = chr(new_char)
+            decrypted_message += new_letter
+        else:
+            char = ord(letter)
+            char_index = ord(letter) - LOWERCASE_LOWER
+            new_index = (char_index - shift) % 26
+            new_char = new_index + LOWERCASE_LOWER
+            new_letter = chr(new_char)
+            decrypted_message += new_letter
+print(f"Decrypted: {decrypted_message}")
